@@ -12,9 +12,9 @@ public class FinallyTest {
       BufferedReader reader = new BufferedReader( new FileReader( "nofile.txt" ));
       reader.readLine();
     } catch( IOException iox ) {
-      System.out.println( "In the catch" );
+      System.out.println( "\tIn the catch" );
     } finally {
-      System.out.println( "In the FINALLY" );
+      System.out.println( "\tIn the FINALLY" );
     }
   }
 
@@ -23,10 +23,10 @@ public class FinallyTest {
       BufferedReader reader = new BufferedReader( new FileReader( "nofile.txt" ));
       reader.readLine();
     } catch( IOException iox ) {
-      System.out.println( "In the catch" );
+      System.out.println( "\tIn the catch" );
       System.exit( -1);
     } finally {
-      System.out.println( "In the FINALLY" );
+      System.out.println( "\tIn the FINALLY" );
     }
   }
 
@@ -35,22 +35,22 @@ public class FinallyTest {
       BufferedReader reader = new BufferedReader( new FileReader( "nofile.txt" ));
       reader.readLine();
     } catch( IOException iox ) {
-      System.out.println( "In the catch" );
+      System.out.println( "\tIn the catch" );
       return;
     } finally {
-      System.out.println( "In the FINALLY" );
+      System.out.println( "\tIn the FINALLY" );
     }
   }
 
   public String testReturnInTry() {
     try {
       BufferedReader reader = new BufferedReader( new InputStreamReader( System.in ));
-      System.out.println( "Doing a readLine()" );
+      System.out.println( "\tDoing a readLine()" );
       return reader.readLine();
     } catch( IOException iox ) {
-      System.out.println( "In the catch" );
+      System.out.println( "\tIn the catch" );
     } finally {
-      System.out.println( "In the FINALLY" );
+      System.out.println( "\tIn the FINALLY" );
     }
     return null;
   }
@@ -58,50 +58,72 @@ public class FinallyTest {
   public String testReturnInFinally() {
     try {
       BufferedReader reader = new BufferedReader( new InputStreamReader( System.in ));
-      System.out.println( "returning in try" );
+      System.out.println( "\treturning in try" );
       return "try";
     } finally {
-      System.out.println( "In the FINALLY" );
+      System.out.println( "\tIn the FINALLY" );
       return "finally";
     }
   }
 
+  /**
+   * purposelly throwing a NPE
+   */
   public void testThrowException() {
     try { 
       List list = null;
       list.add( null );
       BufferedReader reader = new BufferedReader( new FileReader( "nofile.txt" ));
     } catch( FileNotFoundException fex ) {
-      System.out.println( "In the catch" );
+      System.out.println( "\tIn the catch" );
     } finally {
-      System.out.println( "In the NPE FINALLY" );
+      System.out.println( "\tIn the NPE FINALLY" );
+    }
+  }
+
+  public void testThrowInCatch() {
+    try { 
+      BufferedReader reader = new BufferedReader( new FileReader( "nofile.txt" ));
+    } catch( FileNotFoundException fex ) {
+      System.out.println( "\tIn the catch" );
+      throw new RuntimeException( "unchecked" );
+    } finally {
+      System.out.println( "\tIn the Throw In Catch FINALLY" );
     }
   }
 
   public static void main( String[] args ) {
     FinallyTest ft = new FinallyTest();
 
-    System.out.println( "Test catch-finally");
+    System.out.println( "\nTest catch-finally");
     ft.testCatchFinally();
 
-    System.out.println( "Test Return In Catch");
+    System.out.println( "\nTest Return In Catch");
     ft.testReturnInCatch();
 
-    System.out.println( "Test Return in Try");
+    System.out.println( "\nTest Return in Try");
     ft.testReturnInTry();
     System.out.println( "returned from Return in Try");
 
-    System.out.println( "Test throw Exception");
+    System.out.println( "\nTest throw Exception");
     try {
       ft.testThrowException();
     } catch( NullPointerException npe ) {
-        System.out.println( "Caught the NPE\n");
+      //catch the NPE so the whole program isn't killed
     }
-    System.out.println( "Test Return in Finally");
+
+    System.out.println( "\nTest Return in Finally");
     String value = ft.testReturnInFinally();
     System.out.println( "Returned ["+value+"]");
 
-    System.out.println( "Test System Exit");
+    System.out.println( "\nTest throw in Catch ");
+    try {
+      ft.testThrowInCatch();
+    } catch( RuntimeException rex ) {
+      // catch and ignore
+    }
+
+    System.out.println( "\nTest System Exit");
     ft.testSystemExit();
   }
 
