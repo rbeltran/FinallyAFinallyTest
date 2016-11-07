@@ -55,6 +55,17 @@ public class FinallyTest {
     return null;
   }
 
+  public String testReturnInFinally() {
+    try {
+      BufferedReader reader = new BufferedReader( new InputStreamReader( System.in ));
+      System.out.println( "returning in try" );
+      return "try";
+    } finally {
+      System.out.println( "In the FINALLY" );
+      return "finally";
+    }
+  }
+
   public void testThrowException() {
     try { 
       List list = null;
@@ -81,7 +92,17 @@ public class FinallyTest {
     System.out.println( "returned from Return in Try");
 
     System.out.println( "Test throw Exception");
-    ft.testThrowException();
+    try {
+      ft.testThrowException();
+    } catch( NullPointerException npe ) {
+        System.out.println( "Caught the NPE\n");
+    }
+    System.out.println( "Test Return in Finally");
+    String value = ft.testReturnInFinally();
+    System.out.println( "Returned ["+value+"]");
+
+    System.out.println( "Test System Exit");
+    ft.testSystemExit();
   }
 
 
